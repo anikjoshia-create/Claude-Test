@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Later</string>
+    <string name="accessibility_label">Later — auto-send</string>
+    <string name="accessibility_description">Lets Later press WhatsApp\'s send button for a message you scheduled. It only acts while a scheduled send is in progress, and only after checking that the text on screen is the message you wrote.</string>
+</resources>
