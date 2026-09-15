@@ -59,10 +59,37 @@ Open Later → the gear icon. Work down the checklist:
 | Exact alarms | yes | otherwise Android may hold a send back by minutes |
 | Notifications | yes | carries the tap-to-send fallback |
 | Auto-send (accessibility) | for automation | presses the send button |
-| Display over other apps | for automation | Android blocks a background app from opening WhatsApp without it |
+| Display over other apps | for automation | the reliable way to let Later open WhatsApp in the background; Later tries without it too |
 | Unrestricted battery use | recommended | stops Android sleeping through a send |
 
 Skip the last three and Later still works — every message just waits for one tap.
+
+## If a permission will not turn on
+
+Android 13 and newer put accessibility, and often the overlay and battery settings,
+behind **restricted settings** for any app installed outside an app store. The toggle
+looks available but silently refuses, or is greyed out.
+
+To lift it: **Settings → Apps → Later → ⋮ (top right) → Allow restricted settings**.
+Then grant the permissions as normal.
+
+If that menu item is missing or greyed out — common on Xiaomi, Samsung and Oppo skins —
+install over ADB instead, which is not subject to the restriction at all:
+
+```
+adb install -r app-debug.apk
+```
+
+Or grant everything directly from your computer:
+
+```
+adb shell appops set com.anik.later ACCESS_RESTRICTED_SETTINGS allow
+adb shell appops set com.anik.later SYSTEM_ALERT_WINDOW allow
+adb shell settings put secure enabled_accessibility_services \
+  com.anik.later/com.anik.later.send.WhatsAppAccessibilityService
+adb shell settings put secure accessibility_enabled 1
+adb shell dumpsys deviceidle whitelist +com.anik.later
+```
 
 ## Project layout
 

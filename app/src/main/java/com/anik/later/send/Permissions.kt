@@ -53,11 +53,18 @@ object Permissions {
     fun deviceLocked(context: Context): Boolean =
         context.getSystemService(KeyguardManager::class.java).isDeviceLocked
 
-    /** Why auto-send cannot run right now, or null if it can. */
+    /**
+     * Why auto-send cannot run at all, or null if it is worth attempting.
+     *
+     * Note what is deliberately *not* here: the overlay permission. It is the
+     * documented way to be allowed to launch WhatsApp from the background, but some
+     * devices permit the launch without it — an exact alarm briefly puts us on the
+     * power allowlist. So we try regardless and let the attempt tell us, rather than
+     * refusing up front on a device where it would have worked.
+     */
     fun autoSendBlocker(context: Context): String? = when {
         !WhatsApp.isInstalled(context) -> "WhatsApp is not installed"
         !accessibilityEnabled(context) -> "auto-send is turned off"
-        !canDrawOverlays(context) -> "\"display over other apps\" is off"
         deviceLocked(context) -> "your phone was locked"
         else -> null
     }

@@ -84,13 +84,19 @@ class SendService : Service() {
             return
         }
 
+        // Without the overlay permission Android may silently refuse to bring WhatsApp
+        // forward — no exception, just nothing happening. Wait a much shorter time in
+        // that case so the fallback notification arrives promptly instead of a
+        // half-minute late.
+        val window = if (Permissions.canDrawOverlays(this)) AUTO_WINDOW_MS else BLIND_WINDOW_MS
+
         val deferred = SendCoordinator.begin(
             SendCoordinator.Request(
                 messageId = message.id,
                 recipientName = message.recipientName,
                 phoneNumber = message.phoneNumber,
                 body = message.body,
-                deadlineAt = System.currentTimeMillis() + AUTO_WINDOW_MS,
+                deadlineAt = System.currentTimeMillis() + window,
             )
         )
 
@@ -103,7 +109,7 @@ class SendService : Service() {
             return
         }
 
-        val result = withTimeoutOrNull(AUTO_WINDOW_MS) { deferred.await() }
+        val result = withTimeoutOrNull(window) { deferred.await() }
         when (result) {
             is SendResult.Sent ->
                 Recorder.record(this, message, Outcome.AUTO_SENT, null)
@@ -111,7 +117,14 @@ class SendService : Service() {
                 handOff(message, result.reason)
             null -> {
                 SendCoordinator.complete(SendResult.Abandoned("timed out"))
-                handOff(message, "WhatsApp did not respond in time")
+                handOff(
+                    message,
+                    if (Permissions.canDrawOverlays(this)) {
+                        "WhatsApp did not respond in time"
+                    } else {
+                        "Android blocked opening WhatsApp in the background"
+                    },
+                )
             }
         }
     }
@@ -138,6 +151,7 @@ class SendService : Service() {
         private const val TAG = "Later/SendService"
         private const val EXTRA_MESSAGE_ID = "message_id"
         private const val AUTO_WINDOW_MS = 25_000L
+        private const val BLIND_WINDOW_MS = 8_000L
 
         fun start(context: Context, messageId: Long) {
             val intent = Intent(context, SendService::class.java)

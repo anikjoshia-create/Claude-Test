@@ -114,8 +114,8 @@ fun SetupScreen(onBack: () -> Unit) {
             ),
             Step(
                 title = "Display over other apps",
-                why = "Android blocks a background app from opening WhatsApp without this, " +
-                    "so auto-send needs it too.",
+                why = "The reliable way to let Later open WhatsApp in the background. " +
+                    "Some phones manage without it — Later tries either way.",
                 done = Permissions.canDrawOverlays(context),
                 required = false,
                 action = {
