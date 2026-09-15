@@ -17,7 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Repeat as RepeatIcon
+import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material3.Card
@@ -168,7 +168,7 @@ private fun MessageRow(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (message.repeat != Repeat.NONE) {
                         Icon(
-                            RepeatIcon,
+                            Icons.Default.Repeat,
                             contentDescription = message.repeat.label,
                             modifier = Modifier.size(14.dp),
                         )
