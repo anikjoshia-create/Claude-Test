@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Later" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.Later.Invisible" parent="android:Theme.Translucent.NoTitleBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoDisplay">false</item>
+    </style>
+</resources>
